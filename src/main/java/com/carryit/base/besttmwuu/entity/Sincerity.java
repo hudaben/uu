@@ -5,11 +5,11 @@ import java.util.Date;
 
 public class Sincerity implements Serializable{
 
-    private Integer sid;
+    private Integer id;
 
     private Integer uid;//用户ID
 
-    private float number;//值
+    private int number;//值
 
     private Date createTime;//创建时间
 
@@ -17,12 +17,12 @@ public class Sincerity implements Serializable{
 
     private String channel;//途径
 
-    public Integer getSid() {
-        return sid;
+    public Integer getId() {
+        return id;
     }
 
-    public void setSid(Integer sid) {
-        this.sid = sid;
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getUid() {
@@ -33,11 +33,11 @@ public class Sincerity implements Serializable{
         this.uid = uid;
     }
 
-    public float getNumber() {
+    public int getNumber() {
         return number;
     }
 
-    public void setNumber(float number) {
+    public void setNumber(int number) {
         this.number = number;
     }
 

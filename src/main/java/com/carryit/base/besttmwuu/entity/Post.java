@@ -1,11 +1,14 @@
 package com.carryit.base.besttmwuu.entity;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class Post implements Serializable {
     private Integer id;
 
     private Integer bid;
+
+    private Integer uid;
 
     private String avatar;//头像
 
@@ -23,18 +26,28 @@ public class Post implements Serializable {
 
     private long replytime;//回复时间
 
-    private Integer credit;
+    private float credit;
 
     private Integer views;//意见
 
-    private Integer fabulous;//点赞
+    private int fabulous;//点赞
 
-    public String getCreateDate() {
-        return createDate;
+    private List<String> imageList;
+
+    public Integer getUid() {
+        return uid;
     }
 
-    public void setCreateDate(String createDate) {
-        this.createDate = createDate;
+    public void setUid(Integer uid) {
+        this.uid = uid;
+    }
+
+    public List<String> getImageList() {
+        return imageList;
+    }
+
+    public void setImageList(List<String> imageList) {
+        this.imageList = imageList;
     }
 
     public Integer getId() {
@@ -101,6 +114,14 @@ public class Post implements Serializable {
         this.createtime = createtime;
     }
 
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
     public long getReplytime() {
         return replytime;
     }
@@ -109,11 +130,11 @@ public class Post implements Serializable {
         this.replytime = replytime;
     }
 
-    public Integer getCredit() {
+    public float getCredit() {
         return credit;
     }
 
-    public void setCredit(Integer credit) {
+    public void setCredit(float credit) {
         this.credit = credit;
     }
 
@@ -125,11 +146,11 @@ public class Post implements Serializable {
         this.views = views;
     }
 
-    public Integer getFabulous() {
+    public int getFabulous() {
         return fabulous;
     }
 
-    public void setFabulous(Integer fabulous) {
+    public void setFabulous(int fabulous) {
         this.fabulous = fabulous;
     }
 }

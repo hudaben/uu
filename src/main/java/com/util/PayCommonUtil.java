@@ -1,51 +1,45 @@
 package com.util;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.ConnectException;
 import java.net.URL;
+import java.security.MessageDigest;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
+import java.util.*;
 
 import javax.net.ssl.*;
 import javax.servlet.http.HttpServletRequest;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClients;
+import org.jdom2.JDOMException;
+import org.jdom2.input.SAXBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.xml.sax.InputSource;
 
 /**
  * 支付工具类
  */
 public class PayCommonUtil {
 
+    Logger logger = LoggerFactory.getLogger(PayCommonUtil.class);
+
     public static final String TIME = "yyyyMMddHHmmss";
 
     /**
      * 创建微信交易对象
      */
-    public static SortedMap<Object, Object> getWXPrePayID()
+    public static SortedMap<Object, Object> getWXPrePayID(String notify)
     {
         SortedMap<Object, Object> parameters = new TreeMap<Object, Object>();
         parameters.put("appid", PropertyUtil.getProperty("wxpay.appid"));
         parameters.put("mch_id", PropertyUtil.getProperty("wxpay.mchid"));
         parameters.put("nonce_str", PayCommonUtil.CreateNoncestr());
         parameters.put("fee_type", "CNY");
-        parameters.put("notify_url", PropertyUtil.getProperty("wxpay.notifyurl"));
+        parameters.put("notify_url", PropertyUtil.getProperty(notify));
         parameters.put("trade_type", "APP");
         return parameters;
     }
@@ -60,10 +54,10 @@ public class PayCommonUtil {
             Map<String, String> map = XMLUtil.doXMLParse(result);
             SortedMap<Object, Object> parameterMap = new TreeMap<Object, Object>();
             parameterMap.put("appid", PropertyUtil.getProperty("wxpay.appid"));
+            parameterMap.put("noncestr", PayCommonUtil.CreateNoncestr());
+            parameterMap.put("package", "Sign=WXPay");
             parameterMap.put("partnerid", PropertyUtil.getProperty("wxpay.mchid"));
             parameterMap.put("prepayid", map.get("prepay_id"));
-            parameterMap.put("package", "Sign=WXPay");
-            parameterMap.put("noncestr", PayCommonUtil.CreateNoncestr());
             // 本来生成的时间戳是13位，但是ios必须是10位，所以截取了一下
             parameterMap.put("timestamp",
                     Long.parseLong(String.valueOf(System.currentTimeMillis()).toString().substring(0, 10)));
@@ -121,6 +115,11 @@ public class PayCommonUtil {
         return tenpaySign.equals(mysign);
     }
 
+    // 微信支付签名用
+
+
+
+
     /**
      * @Description：创建sign签名
      * @param characterEncoding
@@ -144,7 +143,7 @@ public class PayCommonUtil {
                 sb.append(k + "=" + v + "&");
             }
         }
-        sb.append("key=" + PropertyUtil.getProperty("key"));
+        sb.append("key=" + PropertyUtil.getProperty("wxpay.key"));
         String sign = MD5Util.MD5Encode(sb.toString(), characterEncoding).toUpperCase();
         return sign;
     }
@@ -350,6 +349,9 @@ public class PayCommonUtil {
         }
         in.close();
         inputStream.close();
+        System.out.println("======================================================================");
+        System.out.println("微信回请求："+sb.toString());
+        System.out.println("======================================================================");
         return sb.toString();
     }
 
@@ -431,4 +433,32 @@ public class PayCommonUtil {
         }
 
     }
+
+    /**
+     * 发送post请求
+     *
+     * @param url
+     *            请求地址
+     * @param outputEntity
+     *            发送内容
+     * @param isLoadCert
+     *            是否加载证书
+     */
+    public static CloseableHttpResponse Post(String url, String outputEntity, boolean isLoadCert) throws Exception {
+        HttpPost httpPost = new HttpPost(url);
+        // 得指明使用UTF-8编码，否则到API服务器XML的中文不能被成功识别
+        httpPost.addHeader("Content-Type", "text/xml");
+        httpPost.setEntity(new StringEntity(outputEntity, "UTF-8"));
+        if (isLoadCert) {
+            // 加载含有证书的http请求
+            return HttpClients.custom().setSSLSocketFactory(CertUtil.initCert()).build().execute(httpPost);
+        } else {
+            return HttpClients.custom().build().execute(httpPost);
+        }
+    }
+
+
+
+
+
 }
