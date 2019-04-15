@@ -10,16 +10,22 @@
 	<sql id="Base_Column_List">
 		uid, phone, password, age
 	</sql>
-	<!--<select id="selectByPrimaryKey" resultMap="BaseResultMap"-->
-		<!--parameterType="java.lang.Integer">-->
-		<!--select-->
-		<!--<include refid="Base_Column_List" />-->
-		<!--from t_user-->
-		<!--where id = #{id,jdbcType=INTEGER}-->
-	<!--</select>-->
+	<select id="selectByPrimaryKey" resultType="com.carryit.base.besttmwuu.entity.User"
+		>
+		select
+		uid,phone,hideSincerity
+		from ims_users
+		where uid = #{uid}
+	</select>
+	<!--后台登录用户匹配数据库-->
+	<select id="getUserByPoneAndPassword" resultType="com.carryit.base.besttmwuu.entity.User">
+
+		SELECT * from ims_users where phone=#{phone} or username = #{phone}
 
 
-	<insert id="insertSelective" parameterType="com.carryit.base.besttmwuu.entity.User">
+	</select>
+
+	<insert id="insertSelective" parameterType="com.carryit.base.besttmwuu.entity.User" useGeneratedKeys="true" keyProperty="uid" keyColumn="uid">
 		insert into ims_users
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 
@@ -41,8 +47,8 @@
 			<if test="address != null">
 				address,
 			</if>
-			<if test="speciality != null">
-				speciality,
+			<if test="companyProfile != null">
+				companyProfile,
 			</if>
 			<if test="need != null">
 				need,
@@ -50,14 +56,23 @@
 			<if test="education != null">
 				education,
 			</if>
-			<if test="isSingle != null">
-				isSingle,
-			</if>
 			<if test="mailbox != null">
 				mailbox,
 			</if>
 			<if test="corporateName != null">
 				corporateName,
+			</if>
+			<if test="marriage != null">
+				marriage,
+			</if>
+			<if test="services != null">
+				services,
+			</if>
+			<if test="sex != null">
+				sex,
+			</if>
+			<if test="iCode != null">
+				iCode,
 			</if>
 		</trim>
 		<trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -80,8 +95,8 @@
 			<if test="address != null">
 				#{address,jdbcType=VARCHAR},
 			</if>
-			<if test="speciality != null">
-				#{speciality,jdbcType=VARCHAR},
+			<if test="companyProfile != null">
+				#{companyProfile,jdbcType=VARCHAR},
 			</if>
 			<if test="need != null">
 				#{need,jdbcType=VARCHAR},
@@ -89,22 +104,31 @@
 			<if test="education != null">
 				#{education,jdbcType=VARCHAR},
 			</if>
-			<if test="isSingle != null">
-				#{isSingle,jdbcType=VARCHAR},
-			</if>
 			<if test="mailbox != null">
 				#{mailbox,jdbcType=VARCHAR},
 			</if>
 			<if test="corporateName != null">
 				#{corporateName,jdbcType=VARCHAR},
 			</if>
+			<if test="marriage != null">
+				#{marriage,jdbcType=VARCHAR},
+			</if>
+			<if test="services != null">
+				#{services,jdbcType=VARCHAR},
+			</if>
+			<if test="sex != null">
+				#{sex,jdbcType=VARCHAR},
+			</if>
+			<if test="iCode != null">
+				#{iCode,jdbcType=VARCHAR},
+			</if>
 		</trim>
 	</insert>
-<!--	<update id="updateByPrimaryKeySelective" parameterType="com.carryit.base.besttmwuu.entity.User">
-		update t_user
+	<update id="updateUser"  parameterType="com.carryit.base.besttmwuu.entity.User">
+		update ims_users
 		<set>
 			<if test="userName != null">
-				user_name = #{userName,jdbcType=VARCHAR},
+				username = #{userName,jdbcType=VARCHAR},
 			</if>
 			<if test="password != null">
 				password = #{password,jdbcType=VARCHAR},
@@ -112,9 +136,44 @@
 			<if test="age != null">
 				age = #{age,jdbcType=INTEGER},
 			</if>
+
+			<if test="phone != null">
+				phone =#{phone},
+			</if>
+
+			<if test="idCard != null">
+				idCard=#{idCard},
+			</if>
+			<if test="address != null">
+				address=#{address},
+			</if>
+			<if test="companyProfile != null">
+				companyProfile=#{companyProfile},
+			</if>
+			<if test="need != null">
+				need=#{need},
+			</if>
+			<if test="education != null">
+				education=#{education},
+			</if>
+			<if test="mailbox != null">
+				mailbox=#{mailbox},
+			</if>
+			<if test="corporateName != null">
+				corporateName=#{corporateName},
+			</if>
+			<if test="marriage != null">
+				marriage=#{marriage},
+			</if>
+			<if test="services != null">
+				services=#{services},
+			</if>
+			<if test="sex != null">
+				sex=#{sex},
+			</if>
 		</set>
-		where id = #{id,jdbcType=INTEGER}
-	</update>-->
+		where uid = #{uid,jdbcType=INTEGER}
+	</update>
 <!--	<update id="updateByPrimaryKey" parameterType="com.carryit.base.besttmwuu.entity.User">
 		update t_user
 		set user_name = #{userName,jdbcType=VARCHAR},
@@ -137,4 +196,10 @@
 		password = #{password}
 		where phone = #{phone}
 	</update>
+
+	<!--通过ID查-->
+	<select id="getUserById" resultType="com.carryit.base.besttmwuu.entity.User">
+		select * from ims_users where uid = #{id}
+
+	</select>
 </mapper>

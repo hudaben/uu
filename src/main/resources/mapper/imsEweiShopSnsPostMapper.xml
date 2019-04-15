@@ -52,7 +52,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.carryit.base.besttmwuu.entity.ImsEweiShopSnsPostWithBLOBs">
-    insert into ims_ewei_shop_sns_post (id, uniacid, bid, 
+    insert into ims_ewei_shop_sns_post (id, uniacid, bid, uid,
       pid, rpid, openid, 
       avatar, nickname, title, 
       voice, createtime, replytime, 
@@ -60,8 +60,8 @@
       istop, isboardtop, isbest, isboardbest, 
       deleted, deletedtime, checked, 
       checktime, isadmin, content, 
-      images)
-    values (#{id,jdbcType=INTEGER}, #{uniacid,jdbcType=INTEGER}, #{bid,jdbcType=INTEGER}, 
+      image)
+    values (#{id,jdbcType=INTEGER}, #{uniacid,jdbcType=INTEGER}, #{bid,jdbcType=INTEGER}, #{uid,jdbcType=INTEGER},
       #{pid,jdbcType=INTEGER}, #{rpid,jdbcType=INTEGER}, #{openid,jdbcType=VARCHAR}, 
       #{avatar,jdbcType=VARCHAR}, #{nickname,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, 
       #{voice,jdbcType=VARCHAR}, #{createtime,jdbcType=INTEGER}, #{replytime,jdbcType=INTEGER}, 
@@ -380,5 +380,24 @@
     from ims_ewei_shop_sns_post
     where id=2
   </select>
+
+  <select id="getcommentBypid" resultType="com.carryit.base.besttmwuu.entity.Post">
+    select sp.id,sp.content,m.nickname,sp.createtime from ims_ewei_shop_sns_post sp JOIN ims_ewei_shop_member m on sp.uid=m.uid where sp.pid =#{id} ORDER by sp.createtime ASC
+  </select>
+
+  <select id="getTredsList" resultType="com.carryit.base.besttmwuu.entity.Post">
+    select sp.id,sp.bid,m.avatar,sp.content,sp.image,m.nickname,sp.createtime,b.title from ims_ewei_shop_sns_post sp left JOIN ims_ewei_shop_member m on sp.uid=m.uid left JOIN ims_ewei_shop_sns_board b on sp.bid=b.id
+    where sp.pid is null and sp.uid = #{uid} ORDER by sp.createtime desc
+</select>
+
+  <select id="getTredsCount" resultType="long">
+    select count(*) from ims_ewei_shop_sns_post sp JOIN ims_ewei_shop_member m on sp.uid=m.uid
+    where sp.pid is null and sp.uid = #{uid}
+  </select>
+
+  <delete id="delTreds" parameterType="java.lang.Integer">
+    delete from ims_ewei_shop_sns_post
+    where id = #{id} OR pid = #{id}
+  </delete>
 
 </mapper>

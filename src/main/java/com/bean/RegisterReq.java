@@ -13,13 +13,21 @@ public class RegisterReq extends CommonRequest  {
 
 	public String address;   //地址
 
-	public String speciality; //特长
+	public String companyProfile; //公司简介
+
+	public String corporateName;//公司名称
 
 	public String need;   //需求
 
 	public String education; //学历
 
-	public String  isSingle; //是否单身
+	public String mailbox;//公司邮箱
+
+	public String marriage;//婚否
+
+	public String services;//提供服务
+
+	public String sex;//性别
 
 
 }
